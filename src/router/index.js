@@ -1,26 +1,34 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: Home
+    redirect: '/login'
   },
   {
-    path: '/about',
-    name: 'about',
-    component: () => import('../views/About.vue')
+    path: '/login',
+    name: 'login',
+    component: () => import('../components/Login')
+  },
+  {
+    path: '/home',
+    name: 'home',
+    component: () => import('../components/Home')
   }
 ];
 
 const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
   routes
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.path === '/login') return next()
+  const token = window.sessionStorage.getItem('token')
+  //if(!token) return next('/login')
+  next()
 });
 
 export default router
